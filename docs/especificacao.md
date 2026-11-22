@@ -268,6 +268,10 @@ em JSON) em que todo nó tem o campo `tipo`. Os números são do tipo `number` (
 pontuação ou delimitador é guardado, os grupos aninham exatamente como no código e os
 modificadores ficam em uma lista, na ordem em que foram escritos.
 
+**Fase 2:** todo nó, menos o `Programa`, também tem o campo `linha`, com a linha da palavra-chave
+que o começa (`tela`, `reta`, `circulo`, `retangulo`, `grupo`, `girar` ou `mover`). A verificação
+semântica usa essa linha nas mensagens de erro (ver `docs/semantica.md`).
+
 | Nó (`tipo`) | Campos | O que representa |
 |---|---|---|
 | `Programa` | `tela`: nó `Tela`; `itens`: lista de formas e grupos | O programa inteiro. `itens` está na ordem do código e pode ser vazia. |
@@ -306,31 +310,31 @@ Programa
     └── Circulo  (0, 0) raio 25   preenchimento: preto
 ```
 
-AST em JSON, como a página de teste mostra:
+AST em JSON, como a página de teste mostra (com o campo `linha`, acrescentado na Fase 2):
 
 ```json
 {
   "tipo": "Programa",
-  "tela": { "tipo": "Tela", "largura": 400, "altura": 300 },
+  "tela": { "tipo": "Tela", "linha": 1, "largura": 400, "altura": 300 },
   "itens": [
     {
-      "tipo": "Retangulo", "x": 50, "y": 150, "largura": 200, "altura": 60,
+      "tipo": "Retangulo", "linha": 3, "x": 50, "y": 150, "largura": 200, "altura": 60,
       "estilo": { "traco": null, "preenchimento": "azul", "espessura": null }
     },
     {
-      "tipo": "Grupo",
-      "modificadores": [ { "tipo": "Deslocamento", "dx": 70, "dy": 190 } ],
+      "tipo": "Grupo", "linha": 4,
+      "modificadores": [ { "tipo": "Deslocamento", "linha": 4, "dx": 70, "dy": 190 } ],
       "itens": [
         {
-          "tipo": "Circulo", "cx": 0, "cy": 0, "raio": 25,
+          "tipo": "Circulo", "linha": 5, "cx": 0, "cy": 0, "raio": 25,
           "estilo": { "traco": null, "preenchimento": "preto", "espessura": null }
         },
         {
-          "tipo": "Grupo",
-          "modificadores": [ { "tipo": "Rotacao", "angulo": 45 } ],
+          "tipo": "Grupo", "linha": 6,
+          "modificadores": [ { "tipo": "Rotacao", "linha": 6, "angulo": 45 } ],
           "itens": [
             {
-              "tipo": "Reta", "x1": 0, "y1": 0, "x2": 20, "y2": 0,
+              "tipo": "Reta", "linha": 7, "x1": 0, "y1": 0, "x2": 20, "y2": 0,
               "estilo": { "traco": "branco", "preenchimento": null, "espessura": 2 }
             }
           ]
@@ -338,11 +342,11 @@ AST em JSON, como a página de teste mostra:
       ]
     },
     {
-      "tipo": "Grupo",
-      "modificadores": [ { "tipo": "Deslocamento", "dx": 200, "dy": 190 } ],
+      "tipo": "Grupo", "linha": 10,
+      "modificadores": [ { "tipo": "Deslocamento", "linha": 10, "dx": 200, "dy": 190 } ],
       "itens": [
         {
-          "tipo": "Circulo", "cx": 0, "cy": 0, "raio": 25,
+          "tipo": "Circulo", "linha": 11, "cx": 0, "cy": 0, "raio": 25,
           "estilo": { "traco": null, "preenchimento": "preto", "espessura": null }
         }
       ]
@@ -423,8 +427,9 @@ AST em JSON, como a página de teste mostra:
     erro aponta a linha do último token do programa e diz "encontrado o fim do programa".
 22. **Estilo sempre completo na AST.** Toda forma tem `estilo` com os três campos; o atributo
     omitido vale `null`. Assim a Fase 2 não precisa testar se o campo existe.
-23. **A AST não guarda linhas.** Nesta fase não há verificação semântica depois do parser, então
-    as posições não são necessárias; elas aparecem apenas na lista de tokens e nos erros.
+23. **Linhas na AST.** Na Fase 1 a AST não guardava linhas, porque não havia verificação depois
+    do parser. Na Fase 2 a verificação semântica precisa informar a linha de cada erro, então todo
+    nó, menos o `Programa`, ganhou o campo `linha` (a linha da palavra-chave que o começa).
 
 # 6. Implementação
 
@@ -440,3 +445,8 @@ Em JavaScript puro, com módulos ES e sem bibliotecas de análise:
 | `testes.js` | Roda os casos de teste e casos extras no terminal: `node testes.js`. |
 
 Os casos de teste e o resultado esperado de cada um estão em `docs/casos-de-teste.md`.
+
+A Fase 2 acrescentou `semantica.js` (verificação semântica), `gerador.js` (gerador de SVG),
+`compilador.js` (as quatro fases em ordem), `svg.js` (da página-base: valida, desenha e baixa o
+SVG) e `gerar-saidas.js`. O mapeamento da AST para o SVG, a tabela de cores e as decisões dessa
+fase estão em `docs/semantica.md`, e os testes em `docs/testes-fase2.md`.

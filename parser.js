@@ -24,6 +24,10 @@ const ATRIBUTOS = {
 // Analisador descendente recursivo. Cada não-terminal da gramática (ver docs/especificacao.md)
 // virou uma função com o mesmo nome. Recebe a lista de tokens do lexer e devolve a AST.
 // Para no primeiro erro, lançando um ErroSintatico.
+//
+// Todo nó, menos o Programa, guarda em "linha" a linha da palavra-chave que o começa
+// (tela, reta, circulo, retangulo, grupo, girar, mover). A verificação semântica usa essa
+// linha nas mensagens de erro (Fase 2).
 export function analisarSintatico(tokens) {
     let i = 0;          // ponteiro: posição do token atual na lista de tokens
     let nivel = 0;      // quantos grupos estão abertos (0 = fora de qualquer grupo)
@@ -91,13 +95,13 @@ export function analisarSintatico(tokens) {
 
     // decl_tela → TELA ABRE_PAR NUM VIRGULA NUM FECHA_PAR
     function declTela() {
-        esperar("TELA");
+        const { linha } = esperar("TELA");
         esperar("ABRE_PAR");
         const largura = numero();
         esperar("VIRGULA");
         const altura = numero();
         esperar("FECHA_PAR");
-        return { tipo: "Tela", largura, altura };
+        return { tipo: "Tela", linha, largura, altura };
     }
 
     // itens → item itens | ε
@@ -137,23 +141,23 @@ export function analisarSintatico(tokens) {
 
     // reta → RETA ABRE_PAR NUM VIRGULA NUM VIRGULA NUM VIRGULA NUM FECHA_PAR estilo
     function reta() {
-        esperar("RETA");
+        const { linha } = esperar("RETA");
         const [x1, y1, x2, y2] = argumentos(4);
-        return { tipo: "Reta", x1, y1, x2, y2, estilo: estilo() };
+        return { tipo: "Reta", linha, x1, y1, x2, y2, estilo: estilo() };
     }
 
     // circulo → CIRCULO ABRE_PAR NUM VIRGULA NUM VIRGULA NUM FECHA_PAR estilo
     function circulo() {
-        esperar("CIRCULO");
+        const { linha } = esperar("CIRCULO");
         const [cx, cy, raio] = argumentos(3);
-        return { tipo: "Circulo", cx, cy, raio, estilo: estilo() };
+        return { tipo: "Circulo", linha, cx, cy, raio, estilo: estilo() };
     }
 
     // retangulo → RETANGULO ABRE_PAR NUM VIRGULA NUM VIRGULA NUM VIRGULA NUM FECHA_PAR estilo
     function retangulo() {
-        esperar("RETANGULO");
+        const { linha } = esperar("RETANGULO");
         const [x, y, largura, altura] = argumentos(4);
-        return { tipo: "Retangulo", x, y, largura, altura, estilo: estilo() };
+        return { tipo: "Retangulo", linha, x, y, largura, altura, estilo: estilo() };
     }
 
     // estilo, estilo_t, estilo_p, estilo_e, estilo_tp, estilo_te, estilo_pe
@@ -196,14 +200,14 @@ export function analisarSintatico(tokens) {
 
     // grupo → GRUPO modificadores ABRE_CHAVE itens FECHA_CHAVE
     function grupo() {
-        esperar("GRUPO");
+        const { linha } = esperar("GRUPO");
         const mods = modificadores();
         esperar("ABRE_CHAVE", [descricoes.GIRAR, descricoes.MOVER, descricoes.ABRE_CHAVE]);
         nivel = nivel + 1;
         const lista = itens();
         esperar("FECHA_CHAVE", esperadosAposItem());
         nivel = nivel - 1;
-        return { tipo: "Grupo", modificadores: mods, itens: lista };
+        return { tipo: "Grupo", linha, modificadores: mods, itens: lista };
     }
 
     // modificadores → modificador modificadores | ε
@@ -220,13 +224,13 @@ export function analisarSintatico(tokens) {
     //             | MOVER ABRE_PAR NUM VIRGULA NUM FECHA_PAR
     function modificador() {
         if (atual().tipo === "GIRAR") {
-            esperar("GIRAR");
+            const { linha } = esperar("GIRAR");
             const [angulo] = argumentos(1);
-            return { tipo: "Rotacao", angulo };
+            return { tipo: "Rotacao", linha, angulo };
         }
-        esperar("MOVER");
+        const { linha } = esperar("MOVER");
         const [dx, dy] = argumentos(2);
-        return { tipo: "Deslocamento", dx, dy };
+        return { tipo: "Deslocamento", linha, dx, dy };
     }
 
     return programa();                                       // símbolo inicial

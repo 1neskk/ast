@@ -19,6 +19,8 @@
             --ok-fundo: #e6f4ec;
             --erro: #b42318;
             --erro-fundo: #fdecea;
+            --aviso: #8a5300;
+            --aviso-fundo: #fdf3e1;
             --json-chave: #2f3f8f;
             --json-texto: #a14a00;
             --json-numero: #1d7a46;
@@ -40,6 +42,8 @@
                 --ok-fundo: #13301f;
                 --erro: #ff8a80;
                 --erro-fundo: #3a1714;
+                --aviso: #f5c26b;
+                --aviso-fundo: #35270f;
                 --json-chave: #9fb0ff;
                 --json-texto: #f0b072;
                 --json-numero: #7ee2a8;
@@ -70,22 +74,22 @@
         .layout {
             display: grid;
             grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-            grid-template-areas:
-                "editor resultado"
-                "tokens resultado";
-            grid-template-rows: auto 1fr;
+            align-items: start;
             gap: 16px;
             max-width: 1280px;
             margin: 0 auto;
             padding: 16px;
         }
 
+        .coluna {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-width: 0;
+        }
+
         @media (max-width: 900px) {
-            .layout {
-                grid-template-columns: minmax(0, 1fr);
-                grid-template-areas: "editor" "resultado" "tokens";
-                grid-template-rows: auto;
-            }
+            .layout { grid-template-columns: minmax(0, 1fr); }
         }
 
         .painel {
@@ -102,11 +106,7 @@
             font-weight: 600;
         }
 
-        .painel h2 .contagem { color: var(--suave); font-weight: 400; }
-
-        #painel-editor { grid-area: editor; }
-        #painel-resultado { grid-area: resultado; }
-        #painel-tokens { grid-area: tokens; }
+        .painel h2 .contagem, summary .contagem { color: var(--suave); font-weight: 400; }
 
         .barra {
             display: flex;
@@ -115,6 +115,8 @@
             gap: 8px;
             margin-bottom: 10px;
         }
+
+        .barra.embaixo { margin: 10px 0 0; }
 
         select, button {
             font: inherit;
@@ -125,12 +127,13 @@
             color: var(--texto);
         }
 
-        button#botao {
+        button { cursor: pointer; }
+
+        button.principal {
             background: var(--acento);
             color: var(--acento-texto);
             border-color: var(--acento);
             font-weight: 600;
-            cursor: pointer;
         }
 
         .dica { color: var(--suave); font-size: 13px; }
@@ -163,6 +166,7 @@
             overflow: hidden;
             user-select: none;
             padding-bottom: 40px;   /* acompanha a rolagem até o fim quando há barra horizontal */
+            contain: size;          /* a altura vem da caixa de texto, não da quantidade de números */
         }
 
         #numeros span { display: block; padding-right: 4px; }
@@ -185,7 +189,31 @@
         #descricao-caso { margin: 8px 0 0; color: var(--suave); font-size: 13px; }
         #descricao-caso:empty { display: none; }
 
-        /* resultado */
+        /* resultado: as quatro fases, na ordem em que rodam */
+        .fases {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 0 0 10px;
+            padding: 0;
+            list-style: none;
+            font-size: 13px;
+        }
+
+        .fases li {
+            border: 1px solid var(--borda);
+            border-radius: 999px;
+            padding: 2px 10px;
+            color: var(--suave);
+        }
+
+        .fases li::before { content: "· "; }
+        .fases li.ok { color: var(--ok); border-color: transparent; background: var(--ok-fundo); }
+        .fases li.ok::before { content: "✓ "; }
+        .fases li.erro { color: var(--erro); border-color: transparent; background: var(--erro-fundo); font-weight: 600; }
+        .fases li.erro::before { content: "✗ "; }
+        .fases li.pulada { opacity: 0.6; }
+
         .status {
             border-radius: 6px;
             padding: 10px 12px;
@@ -249,6 +277,15 @@
             overflow-wrap: anywhere;
         }
 
+        /* painéis recolhíveis: AST e tokens */
+        details.painel > summary {
+            cursor: pointer;
+            font-weight: 600;
+            list-style-position: inside;
+        }
+
+        details.painel[open] > summary { margin-bottom: 10px; }
+
         #ast {
             margin: 0;
             padding: 10px 12px;
@@ -266,9 +303,68 @@
         .j-numero { color: var(--json-numero); }
         .j-nulo { color: var(--json-nulo); }
 
-        .ast-barra { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .ast-barra h3 { margin: 0; font-size: 14px; }
-        .ast-barra button { font-size: 13px; padding: 3px 10px; cursor: pointer; }
+        .ast-barra { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .ast-barra button { font-size: 13px; padding: 3px 10px; }
+
+        /* coluna da direita: saída SVG e imagem */
+        #saida {
+            display: block;
+            width: 100%;
+            height: 300px;
+            resize: vertical;
+            margin: 0;
+            padding: 10px;
+            border: 1px solid var(--borda);
+            border-radius: 6px;
+            background: var(--codigo);
+            color: var(--texto);
+            font-family: var(--mono);
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre;
+            overflow: auto;
+            tab-size: 2;
+        }
+
+        .msg {
+            border-radius: 6px;
+            border-left: 4px solid;
+            padding: 6px 10px;
+            margin-top: 10px;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .msg:empty { display: none; }
+        .msg.ok { color: var(--ok); background: var(--ok-fundo); }
+        .msg.aviso { color: var(--aviso); background: var(--aviso-fundo); }
+        .msg.erro { color: var(--erro); background: var(--erro-fundo); }
+
+        .imagem-barra { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+        .imagem-barra label { font-size: 13px; color: var(--suave); user-select: none; }
+
+        /* A tela é o papel branco do desenho, também no tema escuro. O SVG gerado não tem fundo. */
+        #figura {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 280px;
+            padding: 16px;
+            overflow: auto;
+            border-radius: 6px;
+            background: var(--codigo);
+        }
+
+        #figura:empty::after { content: "Nenhum desenho."; color: var(--suave); font-size: 14px; }
+
+        #figura svg {
+            display: block;
+            flex: none;
+            background: #ffffff;
+            box-shadow: 0 0 0 1px var(--borda), 0 1px 4px rgb(0 0 0 / 0.12);
+        }
+
+        #figura.ajustar svg { flex: 1 1 auto; width: 100%; height: auto; }
 
         [hidden] { display: none !important; }
     </style>
@@ -277,66 +373,107 @@
 <body>
     <header>
         <h1>Linguagem de Desenho</h1>
-        <p>Fase 1: análise léxica, análise sintática e geração da AST</p>
+        <p>Fases 1 e 2: análise léxica, sintática e semântica, AST e geração de SVG</p>
     </header>
 
     <main class="layout">
-        <section class="painel" id="painel-editor">
-            <div class="barra">
-                <button id="botao">Analisar</button>
-                <span class="dica">Ctrl+Enter</span>
-                <select id="casos" aria-label="Carregar caso de teste">
-                    <option value="">Carregar caso de teste…</option>
-                </select>
-            </div>
-            <div class="editor">
-                <pre id="numeros" aria-hidden="true"></pre>
-                <textarea id="entrada" spellcheck="false" wrap="off" aria-label="Programa"></textarea>
-            </div>
-            <p id="descricao-caso"></p>
-        </section>
+        <!-- ===================== coluna da esquerda: programa e análise ===================== -->
+        <div class="coluna">
+            <section class="painel" id="painel-editor">
+                <div class="barra">
+                    <button id="botao" class="principal">Analisar</button>
+                    <span class="dica">Ctrl+Enter</span>
+                    <select id="casos" aria-label="Carregar caso de teste">
+                        <option value="">Carregar caso de teste…</option>
+                    </select>
+                </div>
+                <div class="editor">
+                    <pre id="numeros" aria-hidden="true"></pre>
+                    <textarea id="entrada" spellcheck="false" wrap="off" aria-label="Programa"></textarea>
+                </div>
+                <p id="descricao-caso"></p>
+            </section>
 
-        <section class="painel" id="painel-resultado">
-            <h2>Resultado</h2>
-            <div id="status" class="status"></div>
-            <p id="conferencia" class="conferencia"></p>
+            <section class="painel" id="painel-resultado">
+                <h2>Resultado</h2>
+                <ol class="fases" id="fases" aria-label="Fases do compilador">
+                    <li data-fase="lexico">Léxico</li>
+                    <li data-fase="sintatico">Sintático</li>
+                    <li data-fase="semantico">Semântico</li>
+                    <li data-fase="gerador">Gerador</li>
+                </ol>
+                <div id="status" class="status"></div>
+                <p id="conferencia" class="conferencia"></p>
 
-            <div id="bloco-lexico" hidden>
-                <h2>Erros léxicos</h2>
-                <table>
-                    <thead><tr><th>Linha</th><th>Trecho inválido</th></tr></thead>
-                    <tbody id="erros-lexicos"></tbody>
-                </table>
-            </div>
+                <div id="bloco-lexico" hidden>
+                    <h2>Erros léxicos</h2>
+                    <table>
+                        <thead><tr><th>Linha</th><th>Trecho inválido</th></tr></thead>
+                        <tbody id="erros-lexicos"></tbody>
+                    </table>
+                </div>
 
-            <div id="bloco-sintatico" hidden>
-                <h2>Erro sintático</h2>
-                <dl class="erro-sintatico">
-                    <dt>Linha</dt><dd id="sint-linha"></dd>
-                    <dt>Esperado</dt><dd id="sint-esperado"></dd>
-                    <dt>Encontrado</dt><dd id="sint-encontrado"></dd>
-                </dl>
-                <div class="mensagem" id="sint-mensagem"></div>
-            </div>
+                <div id="bloco-sintatico" hidden>
+                    <h2>Erro sintático</h2>
+                    <dl class="erro-sintatico">
+                        <dt>Linha</dt><dd id="sint-linha"></dd>
+                        <dt>Esperado</dt><dd id="sint-esperado"></dd>
+                        <dt>Encontrado</dt><dd id="sint-encontrado"></dd>
+                    </dl>
+                    <div class="mensagem" id="sint-mensagem"></div>
+                </div>
 
-            <div id="bloco-ast" hidden>
+                <div id="bloco-semantico" hidden>
+                    <h2>Erros semânticos</h2>
+                    <table>
+                        <thead><tr><th>Linha</th><th>Mensagem</th></tr></thead>
+                        <tbody id="erros-semanticos"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <details class="painel" id="painel-ast">
+                <summary>AST (JSON)</summary>
                 <div class="ast-barra">
-                    <h3>AST (JSON)</h3>
+                    <span class="dica" id="info-ast"></span>
                     <button id="copiar" type="button">Copiar</button>
                 </div>
                 <pre id="ast"></pre>
-            </div>
-        </section>
+            </details>
 
-        <section class="painel" id="painel-tokens">
-            <h2>Tokens <span class="contagem" id="qtd-tokens"></span></h2>
-            <div class="rolagem">
-                <table>
-                    <thead><tr><th>#</th><th>Linha</th><th>Tipo</th><th>Lexema</th></tr></thead>
-                    <tbody id="tokens"></tbody>
-                </table>
-            </div>
-        </section>
+            <details class="painel" id="painel-tokens">
+                <summary>Tokens <span class="contagem" id="qtd-tokens"></span></summary>
+                <div class="rolagem">
+                    <table>
+                        <thead><tr><th>#</th><th>Linha</th><th>Tipo</th><th>Lexema</th></tr></thead>
+                        <tbody id="tokens"></tbody>
+                    </table>
+                </div>
+            </details>
+        </div>
+
+        <!-- ===================== coluna da direita: SVG gerado e desenho ===================== -->
+        <div class="coluna">
+            <section class="painel" id="painel-saida">
+                <h2>Saída (SVG)</h2>
+                <textarea id="saida" spellcheck="false" wrap="off" aria-label="Texto SVG"
+                    placeholder="O SVG gerado aparece aqui. Você também pode escrever SVG à mão e clicar em Desenhar."></textarea>
+                <div class="barra embaixo">
+                    <button id="btn-desenhar" class="principal">Desenhar</button>
+                    <button id="btn-baixar">Baixar .svg</button>
+                    <span class="dica">Ctrl+Enter desenha</span>
+                </div>
+                <div id="msg-svg" class="msg" role="status"></div>
+            </section>
+
+            <section class="painel" id="painel-imagem">
+                <div class="imagem-barra">
+                    <h2>Imagem <span class="contagem" id="tamanho-tela"></span></h2>
+                    <label><input type="checkbox" id="ajustar" checked> Ajustar à largura</label>
+                </div>
+                <div id="figura" class="ajustar"></div>
+            </section>
+        </div>
     </main>
 
     <script type="module" src="main.js"></script>

@@ -1,0 +1,101 @@
+// Desenho final: um moinho de vento num campo
+tela(500, 400)
+
+// céu, colina e chão (espessura 0: sem contorno)
+retangulo(0, 0, 500, 400) preenchimento: #BFE6FF espessura: 0
+circulo(110, 540, 280) preenchimento: #7CC46A espessura: 0
+retangulo(0, 318, 500, 82) preenchimento: #5DA84B espessura: 0
+
+// sol: um círculo e oito raios, cada raio num grupo girado
+grupo mover(432, 68) {
+    circulo(0, 0, 26) preenchimento: amarelo traco: laranja espessura: 3
+    grupo girar(0)   { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(45)  { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(90)  { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(135) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(180) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(225) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(270) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(315) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+}
+
+// nuvens: três círculos e um retângulo que deixa a base reta
+grupo mover(60, 52) {
+    circulo(0, 20, 18) preenchimento: branco espessura: 0
+    circulo(26, 8, 24) preenchimento: branco espessura: 0
+    circulo(54, 20, 18) preenchimento: branco espessura: 0
+    retangulo(0, 20, 54, 18) preenchimento: branco espessura: 0
+}
+grupo mover(330, 130) {
+    circulo(0, 14, 13) preenchimento: branco espessura: 0
+    circulo(18, 6, 17) preenchimento: branco espessura: 0
+    circulo(38, 14, 13) preenchimento: branco espessura: 0
+    retangulo(0, 14, 38, 13) preenchimento: branco espessura: 0
+}
+
+// pássaros: duas retas em V
+grupo mover(150, 60) {
+    reta(0, 0, 8, 5) espessura: 2
+    reta(8, 5, 16, 0) espessura: 2
+}
+grupo mover(178, 82) {
+    reta(0, 0, 6, 4) espessura: 2
+    reta(6, 4, 12, 0) espessura: 2
+}
+
+// moinho: o telhado é um quadrado girado 45 graus; a torre, desenhada depois, cobre a metade de baixo
+grupo mover(250, 128) girar(45) {
+    retangulo(0, 0, 58, 58) preenchimento: #A0522D traco: #5C2E12 espessura: 2
+}
+retangulo(214, 168, 72, 156) preenchimento: #EAD7B5 traco: #6B4F2A espessura: 2
+retangulo(238, 282, 24, 42) preenchimento: #7A5533 traco: #4A3520 espessura: 2
+circulo(250, 232, 11) preenchimento: #FFF5CC traco: #6B4F2A espessura: 2
+reta(239, 232, 261, 232) traco: #6B4F2A espessura: 2
+reta(250, 221, 250, 243) traco: #6B4F2A espessura: 2
+
+// hélice: quatro pás iguais, cada uma num grupo girado dentro do grupo da hélice
+grupo mover(250, 168) girar(20) {
+    grupo girar(0) {
+        reta(0, 0, 124, 0) traco: #4A3520 espessura: 4
+        retangulo(32, 0, 90, 22) preenchimento: branco traco: #4A3520 espessura: 2
+        reta(62, 0, 62, 22) traco: #4A3520
+        reta(92, 0, 92, 22) traco: #4A3520
+    }
+    grupo girar(90) {
+        reta(0, 0, 124, 0) traco: #4A3520 espessura: 4
+        retangulo(32, 0, 90, 22) preenchimento: branco traco: #4A3520 espessura: 2
+        reta(62, 0, 62, 22) traco: #4A3520
+        reta(92, 0, 92, 22) traco: #4A3520
+    }
+    grupo girar(180) {
+        reta(0, 0, 124, 0) traco: #4A3520 espessura: 4
+        retangulo(32, 0, 90, 22) preenchimento: branco traco: #4A3520 espessura: 2
+        reta(62, 0, 62, 22) traco: #4A3520
+        reta(92, 0, 92, 22) traco: #4A3520
+    }
+    grupo girar(270) {
+        reta(0, 0, 124, 0) traco: #4A3520 espessura: 4
+        retangulo(32, 0, 90, 22) preenchimento: branco traco: #4A3520 espessura: 2
+        reta(62, 0, 62, 22) traco: #4A3520
+        reta(92, 0, 92, 22) traco: #4A3520
+    }
+    circulo(0, 0, 10) preenchimento: #4A3520 traco: #2E2114 espessura: 2
+}
+
+// flores: um caule e uma flor, cada flor num grupo deslocado
+grupo mover(60, 352) {
+    reta(0, 0, 0, 22) traco: verde espessura: 2
+    circulo(0, 0, 6) preenchimento: vermelho traco: #8B0000
+}
+grupo mover(104, 366) {
+    reta(0, 0, 0, 22) traco: verde espessura: 2
+    circulo(0, 0, 6) preenchimento: rosa traco: roxo
+}
+grupo mover(384, 350) {
+    reta(0, 0, 0, 22) traco: verde espessura: 2
+    circulo(0, 0, 6) preenchimento: amarelo traco: laranja
+}
+grupo mover(436, 368) {
+    reta(0, 0, 0, 22) traco: verde espessura: 2
+    circulo(0, 0, 6) preenchimento: vermelho traco: #8B0000
+}

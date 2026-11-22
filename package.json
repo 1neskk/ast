@@ -1,10 +1,11 @@
 {
   "name": "linguagem-de-desenho",
   "private": true,
-  "description": "Fase 1: analisador léxico, sintático e geração da AST de uma linguagem de desenho",
+  "description": "Linguagem de desenho: léxico, sintático, AST, verificação semântica e gerador de SVG",
   "type": "module",
   "scripts": {
     "test": "node testes.js",
+    "saidas": "node gerar-saidas.js",
     "start": "python3 -m http.server 8000"
   }
 }

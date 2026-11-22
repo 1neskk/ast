@@ -2,6 +2,8 @@
 
 Linguagem de Desenho, Fase 1. Cinco programas válidos e três inválidos (um com erro léxico e dois com erros sintáticos diferentes), cada um com o resultado esperado.
 
+> **Fase 2.** As ASTs abaixo estão como na Fase 1. Desde a Fase 2, todo nó, menos o `Programa`, também guarda o campo `linha` (veja as ASTs completas em `casos.js`). O SVG e a imagem de cada programa válido, os casos com erro semântico e o desenho final estão em [`testes-fase2.md`](testes-fase2.md).
+
 Os mesmos casos estão em `casos.js`. Para conferir:
 
 - **Na página de teste**: escolha o caso na lista "Carregar caso de teste". A página analisa o programa e diz se o resultado confere com o esperado.

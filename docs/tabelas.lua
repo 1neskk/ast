@@ -1,4 +1,4 @@
--- Filtro do pandoc para as tabelas da especificação no Word:
+-- Filtro do pandoc para as tabelas dos documentos no Word (especificação e semântica):
 --   1. define a largura relativa das colunas de cada tabela, identificada pelo texto da
 --      primeira célula do cabeçalho (sem isso, o pandoc divide as colunas em partes iguais);
 --   2. deixa o cabeçalho em negrito também como formatação direta, para editores que
@@ -6,6 +6,7 @@
 --
 -- Uso: pandoc -f gfm+yaml_metadata_block docs/especificacao.md --lua-filter docs/tabelas.lua \
 --             --reference-doc docs/referencia.docx -o docs/especificacao.docx
+--      (o mesmo para docs/semantica.md -> docs/semantica.docx)
 
 local larguras = {
   ["Elemento"]          = { 0.17, 0.36, 0.47 },
@@ -15,6 +16,11 @@ local larguras = {
   ["Nó (tipo)"]         = { 0.15, 0.43, 0.42 },
   ["Campo de estilo"]   = { 0.20, 0.20, 0.60 },
   ["Arquivo"]           = { 0.24, 0.76 },
+  -- docs/semantica.md (Fase 2)
+  ["Nó da AST"]         = { 0.15, 0.45, 0.40 },
+  ["Campo do estilo"]   = { 0.25, 0.25, 0.50 },
+  ["Cor na linguagem"]  = { 0.34, 0.33, 0.33 },
+  ["Verificação"]       = { 0.14, 0.24, 0.62 },
 }
 
 local function negrito(bloco)
