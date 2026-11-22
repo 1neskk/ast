@@ -1,0 +1,10 @@
+{
+  "name": "linguagem-de-desenho",
+  "private": true,
+  "description": "Fase 1: analisador léxico, sintático e geração da AST de uma linguagem de desenho",
+  "type": "module",
+  "scripts": {
+    "test": "node testes.js",
+    "start": "python3 -m http.server 8000"
+  }
+}

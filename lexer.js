@@ -1,5 +1,10 @@
 import { regras } from "./tokens.js";
 
+// Fim de um trecho inválido: espaço em branco, um delimitador ou o início de um comentário.
+// Os delimitadores entram aqui porque nesta linguagem eles ficam colados às palavras
+// ("circulo(05, 0, 10)"): o trecho inválido é "05", e não "05,".
+const FIM_DO_TRECHO = /\s|[(){},:]|\/\//y;
+
 export function analisarLexico(texto) {
     const tokens = [];      // lista de tokens encontrados
     const erros = [];       // lista de erros léxicos encontrados
@@ -30,14 +35,19 @@ export function analisarLexico(texto) {
         }
 
         if (!achou) {                                        // nenhuma regra casou: erro léxico
-            let fim = pos;
-            while (fim < texto.length && !/\s/.test(texto[fim])) {
-                fim = fim + 1;                               // anda até o próximo espaço
+            let fim = pos + 1;                               // o trecho tem pelo menos 1 caractere
+            while (fim < texto.length && !terminaTrecho(texto, fim)) {
+                fim = fim + 1;                               // anda até o fim da palavra
             }
-            erros.push({ linha, lexema: texto.slice(pos, fim) });
-            pos = fim;                                       // pula o trecho inválido
+            erros.push({ linha, trecho: texto.slice(pos, fim) });
+            pos = fim;                                       // pula o trecho inválido e continua
         }
     }
 
     return { tokens, erros };
+}
+
+function terminaTrecho(texto, pos) {
+    FIM_DO_TRECHO.lastIndex = pos;
+    return FIM_DO_TRECHO.test(texto);
 }

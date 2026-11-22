@@ -3,44 +3,342 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Analisador do Robô</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Linguagem de Desenho</title>
     <style>
+        :root {
+            --fundo: #f4f5f9;
+            --painel: #ffffff;
+            --borda: #dde1ea;
+            --texto: #1b2033;
+            --suave: #5b6478;
+            --acento: #2f3f8f;
+            --acento-texto: #ffffff;
+            --codigo: #f3f5f9;
+            --ok: #1d7a46;
+            --ok-fundo: #e6f4ec;
+            --erro: #b42318;
+            --erro-fundo: #fdecea;
+            --json-chave: #2f3f8f;
+            --json-texto: #a14a00;
+            --json-numero: #1d7a46;
+            --json-nulo: #8a8fa0;
+            --mono: ui-monospace, "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --fundo: #12141c;
+                --painel: #1a1d29;
+                --borda: #2c3142;
+                --texto: #e4e7f0;
+                --suave: #9aa3b8;
+                --acento: #8fa2ff;
+                --acento-texto: #12141c;
+                --codigo: #151822;
+                --ok: #5fd394;
+                --ok-fundo: #13301f;
+                --erro: #ff8a80;
+                --erro-fundo: #3a1714;
+                --json-chave: #9fb0ff;
+                --json-texto: #f0b072;
+                --json-numero: #7ee2a8;
+                --json-nulo: #7c8398;
+            }
+        }
+
+        * { box-sizing: border-box; }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 700px;
-            margin: 30px auto;
+            margin: 0;
+            background: var(--fundo);
+            color: var(--texto);
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            font-size: 15px;
+            line-height: 1.45;
         }
 
-        textarea {
+        header {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 20px 16px 4px;
+        }
+
+        header h1 { margin: 0; font-size: 22px; }
+        header p { margin: 2px 0 0; color: var(--suave); }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            grid-template-areas:
+                "editor resultado"
+                "tokens resultado";
+            grid-template-rows: auto 1fr;
+            gap: 16px;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        @media (max-width: 900px) {
+            .layout {
+                grid-template-columns: minmax(0, 1fr);
+                grid-template-areas: "editor" "resultado" "tokens";
+                grid-template-rows: auto;
+            }
+        }
+
+        .painel {
+            background: var(--painel);
+            border: 1px solid var(--borda);
+            border-radius: 10px;
+            padding: 14px;
+            min-width: 0;
+        }
+
+        .painel h2 {
+            margin: 0 0 10px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .painel h2 .contagem { color: var(--suave); font-weight: 400; }
+
+        #painel-editor { grid-area: editor; }
+        #painel-resultado { grid-area: resultado; }
+        #painel-tokens { grid-area: tokens; }
+
+        .barra {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        select, button {
+            font: inherit;
+            border-radius: 6px;
+            border: 1px solid var(--borda);
+            padding: 6px 10px;
+            background: var(--painel);
+            color: var(--texto);
+        }
+
+        button#botao {
+            background: var(--acento);
+            color: var(--acento-texto);
+            border-color: var(--acento);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .dica { color: var(--suave); font-size: 13px; }
+
+        #casos { flex: 1 1 220px; min-width: 0; max-width: 100%; }
+
+        /* editor com numeração de linhas */
+        .editor {
+            display: flex;
+            border: 1px solid var(--borda);
+            border-radius: 6px;
+            background: var(--codigo);
+            overflow: hidden;
+        }
+
+        .editor pre, .editor textarea {
+            margin: 0;
+            padding: 10px 8px;
+            font-family: var(--mono);
+            font-size: 14px;
+            line-height: 21px;
+        }
+
+        #numeros {
+            flex: none;
+            min-width: 3.2em;
+            text-align: right;
+            color: var(--suave);
+            border-right: 1px solid var(--borda);
+            overflow: hidden;
+            user-select: none;
+            padding-bottom: 40px;   /* acompanha a rolagem até o fim quando há barra horizontal */
+        }
+
+        #numeros span { display: block; padding-right: 4px; }
+        #numeros span.erro { color: var(--erro); background: var(--erro-fundo); font-weight: 700; }
+
+        #entrada {
+            flex: 1;
+            min-width: 0;
+            height: 360px;
+            resize: vertical;
+            border: 0;
+            outline: none;
+            background: transparent;
+            color: var(--texto);
+            white-space: pre;
+            overflow: auto;
+            tab-size: 4;
+        }
+
+        #descricao-caso { margin: 8px 0 0; color: var(--suave); font-size: 13px; }
+        #descricao-caso:empty { display: none; }
+
+        /* resultado */
+        .status {
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .status.ok { background: var(--ok-fundo); color: var(--ok); }
+        .status.erro { background: var(--erro-fundo); color: var(--erro); }
+        .status small { display: block; font-weight: 400; margin-top: 2px; }
+
+        .conferencia { font-size: 13px; margin: -4px 0 12px; }
+        .conferencia.ok { color: var(--ok); }
+        .conferencia.erro { color: var(--erro); }
+        .conferencia:empty { display: none; }
+
+        table {
             width: 100%;
-            height: 160px;
-            font-family: monospace;
-            font-size: 16px;
+            border-collapse: collapse;
+            font-size: 14px;
         }
 
-        button {
-            margin: 10px 0;
-            padding: 8px 16px;
-            font-size: 16px;
+        th, td {
+            text-align: left;
+            padding: 4px 8px;
+            border-bottom: 1px solid var(--borda);
+            vertical-align: top;
         }
 
-        #saida {
-            border: 1px solid #ccc;
-            padding: 10px;
-            min-height: 60px;
-            white-space: pre-wrap;
-            font-family: monospace;
+        th {
+            position: sticky;
+            top: 0;
+            background: var(--painel);
+            color: var(--suave);
+            font-weight: 600;
         }
+
+        td.mono, td code { font-family: var(--mono); font-size: 13px; }
+        td.num { text-align: right; color: var(--suave); width: 1%; white-space: nowrap; }
+        tr.clicavel { cursor: pointer; }
+        tr.clicavel:hover td { background: var(--codigo); }
+
+        .rolagem { max-height: 420px; overflow: auto; }
+
+        dl.erro-sintatico {
+            display: grid;
+            grid-template-columns: max-content 1fr;
+            gap: 6px 12px;
+            margin: 0 0 12px;
+        }
+
+        dl.erro-sintatico dt { color: var(--suave); }
+        dl.erro-sintatico dd { margin: 0; font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; }
+
+        .mensagem {
+            font-family: var(--mono);
+            font-size: 13px;
+            background: var(--codigo);
+            border-radius: 6px;
+            padding: 8px 10px;
+            overflow-wrap: anywhere;
+        }
+
+        #ast {
+            margin: 0;
+            padding: 10px 12px;
+            max-height: 70vh;
+            overflow: auto;
+            background: var(--codigo);
+            border-radius: 6px;
+            font-family: var(--mono);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .j-chave { color: var(--json-chave); }
+        .j-texto { color: var(--json-texto); }
+        .j-numero { color: var(--json-numero); }
+        .j-nulo { color: var(--json-nulo); }
+
+        .ast-barra { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .ast-barra h3 { margin: 0; font-size: 14px; }
+        .ast-barra button { font-size: 13px; padding: 3px 10px; cursor: pointer; }
+
+        [hidden] { display: none !important; }
     </style>
 </head>
 
 <body>
-    <h1>Analisador do Robô</h1>
-    <textarea id="entrada"></textarea>
-    <br>
-    <button id="botao">Analisar</button>
-    <h3>Resultado</h3>
-    <div id="saida"></div>
+    <header>
+        <h1>Linguagem de Desenho</h1>
+        <p>Fase 1: análise léxica, análise sintática e geração da AST</p>
+    </header>
+
+    <main class="layout">
+        <section class="painel" id="painel-editor">
+            <div class="barra">
+                <button id="botao">Analisar</button>
+                <span class="dica">Ctrl+Enter</span>
+                <select id="casos" aria-label="Carregar caso de teste">
+                    <option value="">Carregar caso de teste…</option>
+                </select>
+            </div>
+            <div class="editor">
+                <pre id="numeros" aria-hidden="true"></pre>
+                <textarea id="entrada" spellcheck="false" wrap="off" aria-label="Programa"></textarea>
+            </div>
+            <p id="descricao-caso"></p>
+        </section>
+
+        <section class="painel" id="painel-resultado">
+            <h2>Resultado</h2>
+            <div id="status" class="status"></div>
+            <p id="conferencia" class="conferencia"></p>
+
+            <div id="bloco-lexico" hidden>
+                <h2>Erros léxicos</h2>
+                <table>
+                    <thead><tr><th>Linha</th><th>Trecho inválido</th></tr></thead>
+                    <tbody id="erros-lexicos"></tbody>
+                </table>
+            </div>
+
+            <div id="bloco-sintatico" hidden>
+                <h2>Erro sintático</h2>
+                <dl class="erro-sintatico">
+                    <dt>Linha</dt><dd id="sint-linha"></dd>
+                    <dt>Esperado</dt><dd id="sint-esperado"></dd>
+                    <dt>Encontrado</dt><dd id="sint-encontrado"></dd>
+                </dl>
+                <div class="mensagem" id="sint-mensagem"></div>
+            </div>
+
+            <div id="bloco-ast" hidden>
+                <div class="ast-barra">
+                    <h3>AST (JSON)</h3>
+                    <button id="copiar" type="button">Copiar</button>
+                </div>
+                <pre id="ast"></pre>
+            </div>
+        </section>
+
+        <section class="painel" id="painel-tokens">
+            <h2>Tokens <span class="contagem" id="qtd-tokens"></span></h2>
+            <div class="rolagem">
+                <table>
+                    <thead><tr><th>#</th><th>Linha</th><th>Tipo</th><th>Lexema</th></tr></thead>
+                    <tbody id="tokens"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
     <script type="module" src="main.js"></script>
 </body>
 
