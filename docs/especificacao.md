@@ -3,7 +3,7 @@ title: "Linguagem de Desenho: especificação da Fase 1"
 subtitle: "Do texto à AST · Teoria da Computação e Compiladores"
 author:
   - Gabriel Almeida Portela (825233281)
-  - Daniel Almeida Portela
+  - Daniel Almeida Portela (825234443)
 lang: pt-BR
 ---
 
