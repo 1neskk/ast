@@ -43,11 +43,16 @@ retangulo(100, 150, 150, 100) preenchimento: #F5DEB3 traco: preto espessura: 2
 reta(100, 150, 175, 90) traco: #8B0000 espessura: 3          // telhado
 reta(175, 90, 250, 150) traco: #8B0000 espessura: 3
 retangulo(160, 200, 30, 50) preenchimento: roxo              // porta
-grupo mover(330, 60) {                                       // sol
-    circulo(0, 0, 30) preenchimento: amarelo traco: laranja
-    grupo girar(45) {
-        reta(35, 0, 50, 0) traco: laranja espessura: 2       // um raio
-    }
+grupo mover(330, 60) {
+    circulo(0, 0, 26) preenchimento: amarelo traco: laranja espessura: 3
+    grupo girar(0)   { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(45)  { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(90)  { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(135) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(180) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(225) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(270) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(315) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
 }
 ```
 
@@ -61,9 +66,30 @@ grupo mover(330, 60) {                                       // sol
   <line x1="175" y1="90" x2="250" y2="150" fill="none" stroke="#8B0000" stroke-width="3"/>
   <rect x="160" y="200" width="30" height="50" fill="purple" stroke="black" stroke-width="1"/>
   <g transform="translate(330 60)">
-    <circle cx="0" cy="0" r="30" fill="yellow" stroke="orange" stroke-width="1"/>
+    <circle cx="0" cy="0" r="26" fill="yellow" stroke="orange" stroke-width="3"/>
+    <g transform="rotate(0)">
+      <line x1="34" y1="0" x2="48" y2="0" fill="none" stroke="orange" stroke-width="3"/>
+    </g>
     <g transform="rotate(45)">
-      <line x1="35" y1="0" x2="50" y2="0" fill="none" stroke="orange" stroke-width="2"/>
+      <line x1="34" y1="0" x2="48" y2="0" fill="none" stroke="orange" stroke-width="3"/>
+    </g>
+    <g transform="rotate(90)">
+      <line x1="34" y1="0" x2="48" y2="0" fill="none" stroke="orange" stroke-width="3"/>
+    </g>
+    <g transform="rotate(135)">
+      <line x1="34" y1="0" x2="48" y2="0" fill="none" stroke="orange" stroke-width="3"/>
+    </g>
+    <g transform="rotate(180)">
+      <line x1="34" y1="0" x2="48" y2="0" fill="none" stroke="orange" stroke-width="3"/>
+    </g>
+    <g transform="rotate(225)">
+      <line x1="34" y1="0" x2="48" y2="0" fill="none" stroke="orange" stroke-width="3"/>
+    </g>
+    <g transform="rotate(270)">
+      <line x1="34" y1="0" x2="48" y2="0" fill="none" stroke="orange" stroke-width="3"/>
+    </g>
+    <g transform="rotate(315)">
+      <line x1="34" y1="0" x2="48" y2="0" fill="none" stroke="orange" stroke-width="3"/>
     </g>
   </g>
 </svg>

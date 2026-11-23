@@ -67,11 +67,16 @@ retangulo(100, 150, 150, 100) preenchimento: #F5DEB3 traco: preto espessura: 2
 reta(100, 150, 175, 90) traco: #8B0000 espessura: 3          // telhado
 reta(175, 90, 250, 150) traco: #8B0000 espessura: 3
 retangulo(160, 200, 30, 50) preenchimento: roxo              // porta
-grupo mover(330, 60) {                                       // sol
-    circulo(0, 0, 30) preenchimento: amarelo traco: laranja
-    grupo girar(45) {
-        reta(35, 0, 50, 0) traco: laranja espessura: 2       // um raio
-    }
+grupo mover(330, 60) {
+    circulo(0, 0, 26) preenchimento: amarelo traco: laranja espessura: 3
+    grupo girar(0)   { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(45)  { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(90)  { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(135) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(180) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(225) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(270) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(315) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
 }
 ```
 

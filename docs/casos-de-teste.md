@@ -57,11 +57,16 @@ retangulo(100, 150, 150, 100) preenchimento: #F5DEB3 traco: preto espessura: 2
 reta(100, 150, 175, 90) traco: #8B0000 espessura: 3          // telhado
 reta(175, 90, 250, 150) traco: #8B0000 espessura: 3
 retangulo(160, 200, 30, 50) preenchimento: roxo              // porta
-grupo mover(330, 60) {                                       // sol
-    circulo(0, 0, 30) preenchimento: amarelo traco: laranja
-    grupo girar(45) {
-        reta(35, 0, 50, 0) traco: laranja espessura: 2       // um raio
-    }
+grupo mover(330, 60) {
+    circulo(0, 0, 26) preenchimento: amarelo traco: laranja espessura: 3
+    grupo girar(0)   { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(45)  { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(90)  { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(135) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(180) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(225) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(270) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(315) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
 }
 ```
 
@@ -97,19 +102,33 @@ grupo mover(330, 60) {                                       // sol
       "modificadores": [ { "tipo": "Deslocamento", "dx": 330, "dy": 60 } ],
       "itens": [
         {
-          "tipo": "Circulo", "cx": 0, "cy": 0, "raio": 30,
-          "estilo": { "traco": "laranja", "preenchimento": "amarelo", "espessura": null }
+          "tipo": "Circulo", "cx": 0, "cy": 0, "raio": 26,
+          "estilo": { "traco": "laranja", "preenchimento": "amarelo", "espessura": 3 }
         },
-        {
-          "tipo": "Grupo",
-          "modificadores": [ { "tipo": "Rotacao", "angulo": 45 } ],
-          "itens": [
-            {
-              "tipo": "Reta", "x1": 35, "y1": 0, "x2": 50, "y2": 0,
-              "estilo": { "traco": "laranja", "preenchimento": null, "espessura": 2 }
-            }
-          ]
-        }
+        { "tipo": "Grupo", "modificadores": [ { "tipo": "Rotacao", "angulo": 0 } ],
+          "itens": [ { "tipo": "Reta", "x1": 34, "y1": 0, "x2": 48, "y2": 0,
+                       "estilo": { "traco": "laranja", "preenchimento": null, "espessura": 3 } } ] },
+        { "tipo": "Grupo", "modificadores": [ { "tipo": "Rotacao", "angulo": 45 } ],
+          "itens": [ { "tipo": "Reta", "x1": 34, "y1": 0, "x2": 48, "y2": 0,
+                       "estilo": { "traco": "laranja", "preenchimento": null, "espessura": 3 } } ] },
+        { "tipo": "Grupo", "modificadores": [ { "tipo": "Rotacao", "angulo": 90 } ],
+          "itens": [ { "tipo": "Reta", "x1": 34, "y1": 0, "x2": 48, "y2": 0,
+                       "estilo": { "traco": "laranja", "preenchimento": null, "espessura": 3 } } ] },
+        { "tipo": "Grupo", "modificadores": [ { "tipo": "Rotacao", "angulo": 135 } ],
+          "itens": [ { "tipo": "Reta", "x1": 34, "y1": 0, "x2": 48, "y2": 0,
+                       "estilo": { "traco": "laranja", "preenchimento": null, "espessura": 3 } } ] },
+        { "tipo": "Grupo", "modificadores": [ { "tipo": "Rotacao", "angulo": 180 } ],
+          "itens": [ { "tipo": "Reta", "x1": 34, "y1": 0, "x2": 48, "y2": 0,
+                       "estilo": { "traco": "laranja", "preenchimento": null, "espessura": 3 } } ] },
+        { "tipo": "Grupo", "modificadores": [ { "tipo": "Rotacao", "angulo": 225 } ],
+          "itens": [ { "tipo": "Reta", "x1": 34, "y1": 0, "x2": 48, "y2": 0,
+                       "estilo": { "traco": "laranja", "preenchimento": null, "espessura": 3 } } ] },
+        { "tipo": "Grupo", "modificadores": [ { "tipo": "Rotacao", "angulo": 270 } ],
+          "itens": [ { "tipo": "Reta", "x1": 34, "y1": 0, "x2": 48, "y2": 0,
+                       "estilo": { "traco": "laranja", "preenchimento": null, "espessura": 3 } } ] },
+        { "tipo": "Grupo", "modificadores": [ { "tipo": "Rotacao", "angulo": 315 } ],
+          "itens": [ { "tipo": "Reta", "x1": 34, "y1": 0, "x2": 48, "y2": 0,
+                       "estilo": { "traco": "laranja", "preenchimento": null, "espessura": 3 } } ] }
       ]
     }
   ]

@@ -25,11 +25,16 @@ retangulo(100, 150, 150, 100) preenchimento: #F5DEB3 traco: preto espessura: 2
 reta(100, 150, 175, 90) traco: #8B0000 espessura: 3          // telhado
 reta(175, 90, 250, 150) traco: #8B0000 espessura: 3
 retangulo(160, 200, 30, 50) preenchimento: roxo              // porta
-grupo mover(330, 60) {                                       // sol
-    circulo(0, 0, 30) preenchimento: amarelo traco: laranja
-    grupo girar(45) {
-        reta(35, 0, 50, 0) traco: laranja espessura: 2       // um raio
-    }
+grupo mover(330, 60) {
+    circulo(0, 0, 26) preenchimento: amarelo traco: laranja espessura: 3
+    grupo girar(0)   { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(45)  { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(90)  { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(135) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(180) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(225) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(270) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
+    grupo girar(315) { reta(34, 0, 48, 0) traco: laranja espessura: 3 }
 }`,
         esperado: {
             ast: {
@@ -50,16 +55,32 @@ grupo mover(330, 60) {                                       // sol
                         tipo: "Grupo", linha: 8,
                         modificadores: [{ tipo: "Deslocamento", linha: 8, dx: 330, dy: 60 }],
                         itens: [
-                            { tipo: "Circulo", linha: 9, cx: 0, cy: 0, raio: 30,
-                              estilo: estilo({ traco: "laranja", preenchimento: "amarelo" }) },
-                            {
-                                tipo: "Grupo", linha: 10,
-                                modificadores: [{ tipo: "Rotacao", linha: 10, angulo: 45 }],
-                                itens: [
-                                    { tipo: "Reta", linha: 11, x1: 35, y1: 0, x2: 50, y2: 0,
-                                      estilo: estilo({ traco: "laranja", espessura: 2 }) },
-                                ],
-                            },
+                            { tipo: "Circulo", linha: 9, cx: 0, cy: 0, raio: 26,
+                              estilo: estilo({ traco: "laranja", preenchimento: "amarelo", espessura: 3 }) },
+                            { tipo: "Grupo", linha: 10, modificadores: [{ tipo: "Rotacao", linha: 10, angulo: 0 }],
+                              itens: [{ tipo: "Reta", linha: 10, x1: 34, y1: 0, x2: 48, y2: 0,
+                                        estilo: estilo({ traco: "laranja", espessura: 3 }) }] },
+                            { tipo: "Grupo", linha: 11, modificadores: [{ tipo: "Rotacao", linha: 11, angulo: 45 }],
+                              itens: [{ tipo: "Reta", linha: 11, x1: 34, y1: 0, x2: 48, y2: 0,
+                                        estilo: estilo({ traco: "laranja", espessura: 3 }) }] },
+                            { tipo: "Grupo", linha: 12, modificadores: [{ tipo: "Rotacao", linha: 12, angulo: 90 }],
+                              itens: [{ tipo: "Reta", linha: 12, x1: 34, y1: 0, x2: 48, y2: 0,
+                                        estilo: estilo({ traco: "laranja", espessura: 3 }) }] },
+                            { tipo: "Grupo", linha: 13, modificadores: [{ tipo: "Rotacao", linha: 13, angulo: 135 }],
+                              itens: [{ tipo: "Reta", linha: 13, x1: 34, y1: 0, x2: 48, y2: 0,
+                                        estilo: estilo({ traco: "laranja", espessura: 3 }) }] },
+                            { tipo: "Grupo", linha: 14, modificadores: [{ tipo: "Rotacao", linha: 14, angulo: 180 }],
+                              itens: [{ tipo: "Reta", linha: 14, x1: 34, y1: 0, x2: 48, y2: 0,
+                                        estilo: estilo({ traco: "laranja", espessura: 3 }) }] },
+                            { tipo: "Grupo", linha: 15, modificadores: [{ tipo: "Rotacao", linha: 15, angulo: 225 }],
+                              itens: [{ tipo: "Reta", linha: 15, x1: 34, y1: 0, x2: 48, y2: 0,
+                                        estilo: estilo({ traco: "laranja", espessura: 3 }) }] },
+                            { tipo: "Grupo", linha: 16, modificadores: [{ tipo: "Rotacao", linha: 16, angulo: 270 }],
+                              itens: [{ tipo: "Reta", linha: 16, x1: 34, y1: 0, x2: 48, y2: 0,
+                                        estilo: estilo({ traco: "laranja", espessura: 3 }) }] },
+                            { tipo: "Grupo", linha: 17, modificadores: [{ tipo: "Rotacao", linha: 17, angulo: 315 }],
+                              itens: [{ tipo: "Reta", linha: 17, x1: 34, y1: 0, x2: 48, y2: 0,
+                                        estilo: estilo({ traco: "laranja", espessura: 3 }) }] },
                         ],
                     },
                 ],
